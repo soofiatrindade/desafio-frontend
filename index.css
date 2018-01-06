@@ -8,13 +8,14 @@
 
 
 body {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;  
-  color: #444;
-  padding: 2%;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;  
+    color: #444;
+    padding: 2%;
+    background-color: #F6F6F4;
 }
 
 .imagem_header{
-    width: 350px;
+    width: 370px;
     height: 100px;
 }
 h1{
@@ -23,8 +24,8 @@ h1{
 }
 section{height: 470px}
 footer{
- /*   margin-top: 25%;*/
- 
+    /*   margin-top: 25%;*/
+
 }
 .botao{
     border-radius: 50px;    

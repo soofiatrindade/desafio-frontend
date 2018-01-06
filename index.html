@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Desafio Front-end</title>
-        
+        <link rel="shortcut icon" href="img/logomini.ico" >
         <link rel="stylesheet" href="./index.css">
     </head>
     <body onload="criarLista()">
@@ -20,12 +20,15 @@
                     <div class="panel panel-warning">
                         <div class="panel-heading">
                             <div class="row">
-                                <div class="col-lg-10">
+                                <div class="col-lg-8">
                                     <h3 style="padding-top: 5px" class="panel-title"><i class="glyphicon glyphicon-plus"></i>Lista de Compras <label id="qtdItens"> </label></h3>
                                 </div>
-                                <div class="col-lg-2">
+                                <div class="col-lg-4"> 
+                                    <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                    <button type="button" onclick="limparItens()" class="btn btn-primary btn-sm botao"><i class="glyphicon glyphicon-plus"></i> Limpar</button>                                    
                                     <button type="button" data-toggle="modal" data-target="#adicionarItem" class="btn btn-primary btn-sm botao"><i class="glyphicon glyphicon-plus"></i> Adicionar</button>
                                 </div>
+
                             </div>
                         </div>
                         <div class="panel-body">
@@ -42,11 +45,23 @@
                 <div class="col-lg-5">
                     <div class="panel panel-success">
                         <div class="panel-heading">
-                            <h3 class="panel-title"><i class="glyphicon glyphicon-plus"></i> Itens Comprados</h3>
+                            <div class="row">
+                                <div class="col-lg-9"> 
+                                    <h3 class="panel-title"><i class="glyphicon glyphicon-plus"></i> Itens Comprados <label id="qtdItensComprados"> </label></h3>
+                                </div>
+                                <div class="col-lg-3">
+                                    <label>&nbsp;&nbsp;</label>
+                                    <button type="button" onclick="limparItensComprados()" class="btn btn-primary btn-sm botao"><i class="glyphicon glyphicon-plus"></i> Limpar</button>                                    
+                                </div>
+                            </div>
                         </div>
                         <div class="panel-body">
-                            <div class="flot-chart">
-                                <div class="flot-chart-content" id="flot-line-chart"></div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <table id="tabelaItensComprados" class="table table-hover">
+
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,7 +86,7 @@
                         <button type="button" class="close" data-dismiss="modal" onclick="limparForm()" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="myModalLabel">Adicionar Item de Compra&nbsp;<i class="glyphicon glyphicon-pencil"></i></h4>
+                        <h4 class="modal-title" id="myModalLabel">Salvar Item de Compra&nbsp;<i class="glyphicon glyphicon-pencil"></i></h4>
                     </div>
                     <div class="modal-body">
                         <div class="btn-group btn-group-justified" role="group">
@@ -95,8 +110,7 @@
                             </div>                           
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <!-- pegar operadora selecionada -->
+                    <div class="modal-footer">                        
                         <div class="col-lg-8">
                             <span class="alert-warning">                                            
                                 <label style="font-size: 16px;" id="msgCampo"></label>
@@ -107,118 +121,7 @@
                 </div>
             </div>
         </div>                     
-
-        <script type="text/javascript">
-            function criarLista() {
-                listaItems = new Array();
-                qtd = 0;
-                document.getElementById('qtdItens').innerHTML="(0)";
-            }
-            $(document).ready(function () {
-                document.getElementById('msgCampo').innerHTML = "";
-                $("#formAdicionarItem").validate({
-                    rules: {
-                        descricao: {
-                            required: true,
-                            minlength: 3
-                        }
-                    },
-                    messages: {
-                        descricao: {
-                            required: "Preencha este campo, por favor.",
-                            minlength: "Insira no mínimo 3 caracteres."
-                        }
-                    },
-                    errorElement: "em",
-                    errorPlacement: function (error, element) {
-                        // Add the `help-block` class to the error element
-                        error.addClass("help-block");
-
-                        // Add `has-feedback` class to the parent div.form-group
-                        // in order to add icons to inputs
-                        element.parents("").addClass("has-feedback");
-
-                        if (element.prop("type") === "checkbox") {
-                            error.insertAfter(element.parent("label"));
-                        } else {
-                            error.insertAfter(element);
-                        }
-
-                        // Add the span element, if doesn't exists, and apply the icon classes to it.
-                        if (!element.next("span")[ 0 ]) {
-
-                        }
-                    },
-                    success: function (label, element) {
-
-                    },
-                    highlight: function (element, errorClass, validClass) {
-                        $(element).parents("").addClass("has-error").removeClass("has-success");
-
-                    },
-                    unhighlight: function (element, errorClass, validClass) {
-                        $(element).parents("").addClass("has-success").removeClass("has-error");
-
-                    }
-                });
-            });
-
-            function limparForm() {
-                document.formAdicionarItem.descricao.value = "";
-                document.formAdicionarItem.index.value = "";
-                document.getElementById('msgCampo').innerHTML = "";                
-            }
-
-            function mostrarItens() {
-                var options = "";
-                for (var i = 1; i <= qtd; i++) {
-                    options += "<tr>";
-                    options += "<td class='col-sm-9'>" + listaItems[i] + "</td>";
-                    options += "<td class='col-sm-1'><button type='button' onclick='excluirItem(" + i + ")' class='btn btn-warning btn-sm'>Excluir</button></td>";
-                    options += "<td class='col-sm-1'><button type='button' data-target='#adicionarItem' onclick='carregarItem(" + i + ")' class='btn btn-primary btn-sm'> Alterar</button></td>";
-                    options += "<td class='col-sm-1'><button type='button' onclick='comprarItem(" + i + ")' class='btn btn-success btn-sm'>Comprado</button></td>";
-
-                    options += "</tr>";
-                }
-                $('#tabelaItens').html(options).show();
-                document.getElementById('qtdItens').innerHTML="("+qtd+")";
-            }
-
-            function adicionarItem(descricao, index) {
-                if (descricao !== "") {
-                    if (index === "") {
-                        // novo item
-                        qtd++;
-                        listaItems[qtd] = descricao;
-                    } else {
-                        // alteração do item
-                        listaItems[index] = descricao;
-                    }
-                    mostrarItens();
-                    $('#adicionarItem').modal('toggle');
-                    limparForm();
-                } else {
-                    document.getElementById('msgCampo').innerHTML = "O campo descrição é obrigatório!";
-                }                
-            }
-
-            function excluirItem(index) {
-                for (var j = index; j < qtd; j++) {
-                    listaItems[j] = listaItems[j + 1];
-                }
-                qtd--;
-                mostrarItens();                
-            }
-
-            function carregarItem(index) {
-                $('#adicionarItem').modal('show');
-                $('#descricao').val(listaItems[index]);
-                $('#index').val(index);
-            }
-            
-            function comprarItem(){
-                
-            }
-        </script>
+        
+        <script type="text/javascript" src="scripts.js"> </script>                 
     </body>
 </html>
